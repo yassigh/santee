@@ -1,0 +1,130 @@
+/* General styles for the registration container */
+.registration-container {
+    display: flex; /* Use flexbox for layout */
+    align-items: flex-start; /* Align items to the start */
+    justify-content: center; /* Center horizontally */
+    max-width: 800px; /* Maximum width for the entire container */
+    margin: 20px auto; /* Centering the container */
+    padding: 30px; /* Padding around the container */
+    background-color: #ffffff; /* White background */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
+}
+
+/* Image container */
+.image-container {
+    flex: 1; /* Take up 50% of space */
+    max-width: 300px; /* Limit the image size */
+    margin-right: 70px; /* Space between image and form */
+}
+
+.registration-image {
+    width: 100%; /* Make image responsive */
+    height: auto; /* Keep aspect ratio */
+    border-radius: 8px; /* Rounded corners for the image */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect for image */
+}
+
+/* Form container styles */
+.form-container {
+    flex: 2; /* Take up more space than the image */
+    padding: 20px;
+    background-color: #f9f9f9; /* Light grey background for the form */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+/* Heading styles */
+h2 {
+    text-align: center; /* Center the heading */
+    color: #28a745; /* Green color for the heading */
+    margin-bottom: 20px; /* Space below heading */
+    font-family: 'Arial', sans-serif; /* Modern font */
+    font-weight: 600; /* Semi-bold weight */
+}
+
+/* Label styles */
+label {
+    display: block; /* Block display for labels */
+    margin-bottom: 5px; /* Space between label and input */
+    color: #555; /* Darker grey for labels */
+    font-weight: 500; /* Medium weight for labels */
+}
+
+/* Input field styles */
+input {
+    width: 100%; /* Full width for input fields */
+    padding: 12px; /* Padding inside input fields */
+    margin-bottom: 15px; /* Space below input fields */
+    border: 1px solid #28a745; /* Green border (default) */
+    border-radius: 6px; /* Rounded corners for inputs */
+    font-size: 16px; /* Font size */
+    transition: border-color 0.3s ease; /* Smooth transition for border color */
+}
+
+/* Error state for empty fields */
+input.ng-invalid.ng-touched {
+    border-color: #dc3545; /* Red border for invalid input */
+}
+
+/* Success state for filled fields */
+input.ng-valid.ng-touched {
+    border-color: #28a745; /* Green border for valid input */
+}
+
+/* Styles for the error point */
+.error-point {
+    color: #dc3545; /* Red color for error point */
+    margin-left: 5px; /* Space between input and point */
+    visibility: hidden; /* Hidden by default */
+}
+
+/* Show error point when input is invalid */
+input.ng-invalid.ng-touched + .error-point {
+    visibility: visible; /* Show error point */
+}
+
+/* Required field asterisk */
+.required::after {
+    content: ' *'; /* Asterisk content */
+    color: #dc3545; /* Red color for asterisk */
+}
+
+/* Button styles */
+button {
+    width: 100%; /* Full width for the button */
+    padding: 12px; /* Padding inside the button */
+    background-color: #28a745; /* Green background */
+    color: #ffffff; /* White text */
+    border: none; /* No border */
+    border-radius: 6px; /* Rounded corners for button */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s ease; /* Smooth transition for hover */
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Disabled button styles */
+button:disabled {
+    background-color: #cccccc; /* Grey background for disabled buttons */
+    cursor: not-allowed; /* Not-allowed cursor */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .registration-container {
+        flex-direction: column; /* Stack items vertically on small screens */
+        align-items: center; /* Center align items */
+    }
+
+    .image-container {
+       
+      
+        height: 1700px;
+    }
+}
