@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegistrationType; // Assurez-vous que ce type de formulaire est bien importé
+use App\Form\RegistrationType; 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\Encoder\UserPasswordHasherInterface; // Importez UserPasswordHasherInterface
+use Symfony\Component\Security\Core\Encoder\UserPasswordHasherInterface; 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -16,28 +16,38 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'api_register', methods: ['POST'])]
-    public function register(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
-    ): JsonResponse {
-        $data = json_decode($request->getContent(), true);
+public function register(
+    Request $request,
+    EntityManagerInterface $entityManager
+): JsonResponse {
+    $data = json_decode($request->getContent(), true);
     
+    if (!$data) {
+        return new JsonResponse(['error' => 'Invalid JSON or no data received'], 400);
+    }
+    
+    if (!isset($data['email'], $data['nom'], $data['prenom'], $data['password'])) {
+        return new JsonResponse(['error' => 'Missing required fields'], 400);
+    }
+
+    try {
         $user = new User();
         $user->setEmail($data['email']);
         $user->setNom($data['nom']);
         $user->setPrenom($data['prenom']);
-        $user->setPassword(['password']);
-    
-        // Hashage du mot de passe
-        $hashedPassword = $passwordHasher->hashPassword($user, $data['plainPassword']);
-        $user->setPassword($hashedPassword);
-    
+        $user->setPassword($data['password']); // Stocke le mot de passe en clair
+
         $entityManager->persist($user);
         $entityManager->flush();
-    
+
         return new JsonResponse(['message' => 'User registered successfully'], 201);
+    } catch (\Exception $e) {
+        return new JsonResponse(['error' => 'An error occurred: ' . $e->getMessage()], 500);
     }
+}
+
+    
+    
     #[Route('/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request, AuthenticationUtils $authenticationUtils): JsonResponse
     {

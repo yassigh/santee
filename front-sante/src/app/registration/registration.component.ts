@@ -1,6 +1,5 @@
 // src/app/registration/registration.component.ts
-
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegistrationService } from '../registration.service';
 
@@ -9,10 +8,16 @@ import { RegistrationService } from '../registration.service';
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.css']
 })
-export class RegistrationComponent {
-  registrationForm: FormGroup;
+export class RegistrationComponent implements OnInit {
+  registrationForm!: FormGroup;
+  error: string | null = null;
 
-  constructor(private fb: FormBuilder, private registrationService: RegistrationService) {
+  constructor(
+    private fb: FormBuilder,
+    private registrationService: RegistrationService
+  ) {}
+
+  ngOnInit(): void {
     this.registrationForm = this.fb.group({
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
@@ -26,13 +31,13 @@ export class RegistrationComponent {
       this.registrationService.register(this.registrationForm.value).subscribe({
         next: (response) => {
           console.log('User registered successfully', response);
-          // Vous pouvez ajouter une redirection ou un message de succès ici
         },
         error: (error) => {
-          console.error('Registration error', error);
-          // Gérez l'erreur ici (afficher un message, etc.)
+          this.error = 'Registration error: ' + error.message;
         }
       });
+    } else {
+      this.error = 'Please fill out the form correctly.';
     }
   }
 }

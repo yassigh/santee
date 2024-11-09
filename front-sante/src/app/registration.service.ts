@@ -8,13 +8,12 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RegistrationService {
-  private apiUrl = 'http://localhost:8000/api'; // Modifiez l'URL selon votre configuration
+  private apiUrl = 'http://localhost:8000/api';// Adjust your endpoint
 
   constructor(private http: HttpClient) {}
 
-  register(user: { nom: string; prenom: string; email: string; password: string }): Observable<any> {
-    return this.http.post<any>(this.apiUrl, user, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-    });
-  }
+  
+  register(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, data);  // Note l'URL
+}
 }
