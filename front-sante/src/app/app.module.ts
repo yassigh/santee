@@ -11,6 +11,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component'; // Assurez-vous que le chemin est correct
 import { AuthService } from './auth.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { CategoriesComponent } from './categories/categories.component';
+import { ActivityComponent } from './activity/activity.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     RegistrationComponent,
     NavbarComponent,
     LoginComponent,
-    DashboardComponent
+    DashboardComponent,
+    CategoriesComponent,
+    ActivityComponent
   ],
   imports: [
     BrowserModule,

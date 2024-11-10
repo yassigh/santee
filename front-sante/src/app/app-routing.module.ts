@@ -6,10 +6,13 @@ import { RegistrationComponent } from './registration/registration.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { CategoriesComponent } from './categories/categories.component';
+import { ActivityComponent } from './activity/activity.component';
 const routes: Routes = [
   { path: 'register', component: RegistrationComponent },
   { path: 'login', component: LoginComponent },
-
+  { path: 'categories', component: CategoriesComponent },
+  { path: 'activity', component: ActivityComponent },
 {
   path: '**',
   redirectTo: '/dashboard'

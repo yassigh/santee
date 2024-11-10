@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegistrationService } from '../registration.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -14,7 +15,8 @@ export class RegistrationComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private registrationService: RegistrationService
+    private registrationService: RegistrationService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +33,7 @@ export class RegistrationComponent implements OnInit {
       this.registrationService.register(this.registrationForm.value).subscribe({
         next: (response) => {
           console.log('User registered successfully', response);
-        },
+          this.router.navigate(['/login']); },
         error: (error) => {
           this.error = 'Registration error: ' + error.message;
         }
