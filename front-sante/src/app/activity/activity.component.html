@@ -1,29 +1,38 @@
+<app-navbar></app-navbar>
 <main class="activity-container">
     <section class="activity-content">
       <div class="activity-column">
         <header class="activity-header">
           <h2 class="activity-title">&lt; Per day &gt;</h2>
           <div class="activity-card">
-            age:
-            <input type="number" name="age" id="age">
+            <label for="age">Age:</label>
+            <input type="number" name="age" id="age" [(ngModel)]="age">
+  
             <div class="activity-info">
-              <p class="activity-type">activity:</p><select name="activity" id="activity"></select>
+              <label for="activity">Activity:</label>
+              <input type="text" name="activity" id="activity" [(ngModel)]="selectedActivity" placeholder="Entrez l'activité">
               <span class="activity-divider"></span>
             </div>
-            <p class="activity-duration">Donnner l'heure: <input type="number" name="time" id="time"></p>
+  
+            <label for="time">Donnner l'heure:</label>
+            <input type="number" name="time" id="time" [(ngModel)]="time">
           </div>
-          <div class="goal-achievement">
-            <p>you reached the goal today</p>
+  
+          <div class="goal-achievement" *ngIf="goalReached">
+            <p>Vous avez atteint l'objectif aujourd'hui !</p>
           </div>
+  
+          <button (click)="submitActivity()">Enregistrer</button>
         </header>
       </div>
+  
       <div class="history-column">
         <section class="history-section">
-          <h2 class="history-title">historique</h2>
+          <h2 class="history-title">Historique</h2>
           <article class="history-entry">
-            musculation 2 heures
+            {{ selectedActivity }} {{ time }} heures
             <br />
-            <time class="history-date">2024-10-20 14:00</time>
+            <time class="history-date">{{ currentDate | date: 'yyyy-MM-dd HH:mm' }}</time>
           </article>
         </section>
       </div>

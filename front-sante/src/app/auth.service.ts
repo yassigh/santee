@@ -25,4 +25,14 @@ export class AuthService {
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token'); // Vérifier la présence du token
   }
+
+  private currentUser = {
+    id: 1,           // Exemple d'ID d'utilisateur
+    nom: 'yassine gh'  // Autres propriétés de l'utilisateur, si nécessaire
+  };
+
+  getUser() {
+    // Retourne l'utilisateur connecté
+    return this.currentUser;
+  }
 }

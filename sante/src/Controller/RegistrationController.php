@@ -16,9 +16,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'api_register', methods: ['POST'])]
-public function register(
-    Request $request,
-    EntityManagerInterface $entityManager
+public function register(Request $request,EntityManagerInterface $entityManager
 ): JsonResponse {
     $data = json_decode($request->getContent(), true);
     
