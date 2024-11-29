@@ -1,87 +1,92 @@
 <?php
 
 namespace App\Controller;
+
 use Firebase\JWT\JWT;
 use App\Entity\User;
-use App\Form\RegistrationType; 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\Encoder\UserPasswordHasherInterface; 
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 #[Route('/api')]
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'api_register', methods: ['POST'])]
-public function register(Request $request,EntityManagerInterface $entityManager
-): JsonResponse {
-    $data = json_decode($request->getContent(), true);
-    
-    if (!$data) {
-        return new JsonResponse(['error' => 'Invalid JSON or no data received'], 400);
-    }
-    
-    if (!isset($data['email'], $data['nom'], $data['prenom'], $data['password'])) {
-        return new JsonResponse(['error' => 'Missing required fields'], 400);
+    private string $jwtSecret;
+
+    public function __construct()
+    {
+        $this->jwtSecret = 'your_secret_key'; // À remplacer par une clé sécurisée
     }
 
-    try {
+    /**
+     * Endpoint pour l'inscription
+     */
+    #[Route('/register', name: 'api_register', methods: ['POST'])]
+    public function register(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        // Validation des données
+        if (!isset($data['email'], $data['nom'], $data['prenom'], $data['password'])) {
+            return new JsonResponse(['error' => 'Missing required fields'], 400);
+        }
+
+        // Vérification de l'existence de l'utilisateur
+        if ($entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']])) {
+            return new JsonResponse(['error' => 'Email already registered'], 400);
+        }
+
+        // Création d'un nouvel utilisateur
         $user = new User();
         $user->setEmail($data['email']);
         $user->setNom($data['nom']);
         $user->setPrenom($data['prenom']);
-        $user->setPassword($data['password']); // Stocke le mot de passe en clair
+        $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
 
         $entityManager->persist($user);
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'User registered successfully'], 201);
-    } catch (\Exception $e) {
-        return new JsonResponse(['error' => 'An error occurred: ' . $e->getMessage()], 500);
     }
-}
 
-    
-    
+    /**
+     * Endpoint pour la connexion
+     */
     #[Route('/login', name: 'api_login', methods: ['POST'])]
-    public function login(Request $request, AuthenticationUtils $authenticationUtils): JsonResponse
-    {
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
+    public function login(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
 
-        if ($error) {
-            return new JsonResponse([
-                'error' => $error->getMessage()
-            ], JsonResponse::HTTP_UNAUTHORIZED);
+        // Validation des données
+        if (!isset($data['email'], $data['password'])) {
+            return new JsonResponse(['error' => 'Missing email or password'], 400);
         }
 
-        // Obtenez l'utilisateur connecté
-        $user = $this->getUser();
-
-        // Si l'utilisateur est connecté avec succès, générez un token JWT
-        if ($user) {
-            $token = $this->jwtManager->create($user);
-            return new JsonResponse(['token' => $token], JsonResponse::HTTP_OK);
+        // Recherche de l'utilisateur
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+        if (!$user || !$passwordHasher->isPasswordValid($user, $data['password'])) {
+            return new JsonResponse(['error' => 'Invalid credentials'], 401);
         }
-        return new JsonResponse(['error' => 'Invalid credentials'], JsonResponse::HTTP_UNAUTHORIZED);
-    }
-    
-    #[Route('/google-login', name: 'api_google_login', methods: ['POST'])]
-    public function googleLogin(Request $request): Response
-    {
-        $token = $request->get('token');
-        $googleKeysUrl = 'https://www.googleapis.com/oauth2/v3/certs';
 
-        try {
-            $decodedToken = JWT::decode($token, JWK::parseKeySet(file_get_contents($googleKeysUrl)), ['RS256']);
-            $email = $decodedToken->email;
+        // Génération du token JWT
+        $payload = [
+            'sub' => $user->getId(),
+            'email' => $user->getEmail(),
+          
+            'exp' => time() + 3600, // Expiration (1 heure)
+        ];
 
-            return new JsonResponse(['message' => 'Authentification réussie'], 200);
-        } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Authentification échouée'], 401);
-        }
+        $jwt = JWT::encode($payload, $this->jwtSecret, 'HS256');
+
+        return new JsonResponse(['token' => $jwt], 200);
     }
 }

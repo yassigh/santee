@@ -65,17 +65,15 @@ export class ActivityComponent implements OnInit {
     };
 
     // Appeler le service pour ajouter l'activité
-    this.addActivity(newActivity);
-  }
-
-  addActivity(activity: any): Observable<any> {
-    const token = this.authService.getToken();
-    if (!token) {
-      return throwError('Token is missing');
-    }
-  
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.post(`${this.apiUrl}/activity/add`, activity, { headers });
+    this.activityService.addActivity(newActivity).subscribe({
+      next: (response) => {
+        console.log('Activity added successfully', response);
+        // Effectuer une redirection ou mettre à jour l'UI selon la réponse
+      },
+      error: (error) => {
+        console.error('Error adding activity', error);
+      }
+    });
   }
   
   

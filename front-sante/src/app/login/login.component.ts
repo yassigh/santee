@@ -10,10 +10,9 @@ import { AuthService } from '../auth.service'; // Assurez-vous que le chemin est
 })
 export class LoginComponent implements OnInit {
   errorMessage: string = '';
-  loginForm!: FormGroup;  
-  error: string | null = null;  
-
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router ) {}
+  loginForm!: FormGroup;
+  
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     // Initialisation du formulaire avec des validations
@@ -24,18 +23,20 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(): void {
-   
-
     const loginData = this.loginForm.value;
+    console.log('Login Data:', loginData);  // Vérifiez que les données sont correctes
 
     this.authService.login(loginData).subscribe(
       (response: any) => {
         console.log('Login success', response);
-        this.router.navigate(['/categories']);  // Redirect to a dashboard or home page
+        // Assurez-vous que le token est bien sauvegardé
+        this.authService.saveToken(response.token);
+        this.router.navigate(['/categories']);  // Redirige vers la page de catégories
       },
       (error) => {
         this.errorMessage = 'Invalid credentials';
         console.log('Login failed', error);
       }
     );
-  }}
+  }
+  }
