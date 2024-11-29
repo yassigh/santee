@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivityService } from '../activity.service';
-
 import { AuthService } from '../auth.service';
+import { HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Observable, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-activity',
@@ -16,20 +19,32 @@ export class ActivityComponent implements OnInit {
   goalReached: boolean = false;
   currentDate: Date = new Date();
   userId: number | null = null;
-  constructor(private activityService: ActivityService, private authService: AuthService) {}
-  
+  selectedPeriod: string = 'jour';
+
+  private apiUrl = 'http://localhost:8000/api';
+  constructor(
+    private activityService: ActivityService,
+    private authService: AuthService,
+    private http: HttpClient,private router:Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadActivities();  // Charger les activités au démarrage
-    this.getUserId(); // Récupérez l'ID de l'utilisateur connecté
+    const token = this.authService.getToken();
+    if (!token) {
+      this.router.navigate(['/login']);  // Redirect to login if token is missing
+    } else {
+      this.loadActivities();  // Load activities if token is available
+      this.getUserId();  // Get user ID
     }
-    getUserId(): void {
-      // Récupérer l'ID de l'utilisateur connecté via le service d'authentification
-      const user = this.authService.getUser();  // Supposons que `getUser()` retourne l'objet utilisateur
-      this.userId = user ? user.id : null;
-    }
+  }
+  
+
+  getUserId(): void {
+    const user = this.authService.getUser();  // Supposons que `getUser()` retourne l'objet utilisateur
+    this.userId = user ? user.id : null;
+  }
+
   loadActivities(): void {
-    // Simuler des activités ou récupérer via l'API
     this.activities = [
       { nom: 'Lecture' },
       { nom: 'Exercice' },
@@ -38,25 +53,31 @@ export class ActivityComponent implements OnInit {
   }
 
   submitActivity(): void {
-    // Vérifier si l'objectif est atteint
     if (this.time >= 2) {
       this.goalReached = true;
     }
-  
-    // Créer l'objet avec les bonnes propriétés
+   
     const newActivity = {
-      activity: this.selectedActivity,  // Assurez-vous que 'selectedActivity' contient le nom de l'activité
-      heure: this.time,                 // Ou format correct pour 'heure' (peut-être un 'Date' ou autre format)
-      age: this.age ,                    // Assurez-vous que 'age' est bien un nombre
-      userId: this.userId 
+      activity: this.selectedActivity,
+      heure: this.time,
+      age: this.age,
+      userId: this.userId  // Assurez-vous que l'ID de l'utilisateur est présent
     };
-  
-    // Appeler le service pour ajouter l'activité (en envoyant les données correctes)
-    this.activityService.addActivity(newActivity).subscribe(response => {
-      console.log('Activité ajoutée', response);
-    }, error => {
-      console.error('Erreur lors de l\'ajout de l\'activité', error);
-    });
+
+    // Appeler le service pour ajouter l'activité
+    this.addActivity(newActivity);
   }
+
+  addActivity(activity: any): Observable<any> {
+    const token = this.authService.getToken();
+    if (!token) {
+      return throwError('Token is missing');
+    }
+  
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.apiUrl}/activity/add`, activity, { headers });
+  }
+  
+  
   
 }

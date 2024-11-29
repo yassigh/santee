@@ -16,6 +16,13 @@ import { ActivityComponent } from './activity/activity.component';
 import { HomeComponent } from './home/home.component';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ArticleDetailComponent } from './article-detail/article-detail.component';
+import { TestComponent } from './test/test.component';
+import { ProfileComponent } from './profile/profile.component';
+import { WeightComponent } from './weight/weight.component';
+import { LifestyleComponent } from './lifestyle/lifestyle.component';
+import { WaterReminderComponent } from './water-reminder/water-reminder.component';
+import { PressureComponent } from './pressure/pressure.component';
 
 
 @NgModule({
@@ -28,7 +35,14 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 
     CategoriesComponent,
     ActivityComponent,
-
+    PressureComponent,
+    WaterReminderComponent,
+    ActivityComponent,
+    LifestyleComponent,
+    WeightComponent,
+    ProfileComponent,
+    TestComponent,
+    ArticleDetailComponent,
     HomeComponent
 
   ],

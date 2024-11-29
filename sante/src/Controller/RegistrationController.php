@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use Firebase\JWT\JWT;
 use App\Entity\User;
 use App\Form\RegistrationType; 
 use Doctrine\ORM\EntityManagerInterface;
@@ -52,17 +52,25 @@ public function register(Request $request,EntityManagerInterface $entityManager
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        $response = [
-            'lastUsername' => $lastUsername,
-            'error' => $error ? $error->getMessage() : null,
-        ];
+        if ($error) {
+            return new JsonResponse([
+                'error' => $error->getMessage()
+            ], JsonResponse::HTTP_UNAUTHORIZED);
+        }
 
-        return new JsonResponse($response, JsonResponse::HTTP_OK);
+        // Obtenez l'utilisateur connecté
+        $user = $this->getUser();
+
+        // Si l'utilisateur est connecté avec succès, générez un token JWT
+        if ($user) {
+            $token = $this->jwtManager->create($user);
+            return new JsonResponse(['token' => $token], JsonResponse::HTTP_OK);
+        }
+        return new JsonResponse(['error' => 'Invalid credentials'], JsonResponse::HTTP_UNAUTHORIZED);
     }
-     /**
-     * @Route("/api/auth/google", name="api_auth_google", methods={"POST"})
-     */
-    public function googleAuth(Request $request): JsonResponse
+    
+    #[Route('/google-login', name: 'api_google_login', methods: ['POST'])]
+    public function googleLogin(Request $request): Response
     {
         $token = $request->get('token');
         $googleKeysUrl = 'https://www.googleapis.com/oauth2/v3/certs';
@@ -70,9 +78,6 @@ public function register(Request $request,EntityManagerInterface $entityManager
         try {
             $decodedToken = JWT::decode($token, JWK::parseKeySet(file_get_contents($googleKeysUrl)), ['RS256']);
             $email = $decodedToken->email;
-
-            // Effectuer la connexion ou l'inscription de l'utilisateur ici
-            // Vous pouvez récupérer les informations utilisateur et les stocker dans la base de données
 
             return new JsonResponse(['message' => 'Authentification réussie'], 200);
         } catch (\Exception $e) {

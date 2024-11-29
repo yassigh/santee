@@ -10,7 +10,7 @@ class Activity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -18,23 +18,14 @@ class Activity
 
     #[ORM\Column(length: 255)]
     private ?string $heure = null;
+
     #[ORM\Column(type: 'integer')]
-    private $age;
+    private ?int $age = null;
 
-    #[ORM\Column]
-    private ?int $idUser = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
-   
-    public function getAge(): ?int
-    {
-        return $this->age;
-    }
-
-    public function setAge(int $age): self
-    {
-        $this->age = $age;
-        return $this;
-    }
     public function getId(): ?int
     {
         return $this->id;
@@ -45,10 +36,9 @@ class Activity
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
+    public function setNom(string $nom): self
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -57,22 +47,31 @@ class Activity
         return $this->heure;
     }
 
-    public function setHeure(string $heure): static
+    public function setHeure(string $heure): self
     {
         $this->heure = $heure;
-
         return $this;
     }
 
-    public function getIdUser(): ?int
+    public function getAge(): ?int
     {
-        return $this->idUser;
+        return $this->age;
     }
 
-    public function setIdUser(int $idUser): static
+    public function setAge(int $age): self
     {
-        $this->idUser = $idUser;
+        $this->age = $age;
+        return $this;
+    }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 }

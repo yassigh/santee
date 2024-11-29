@@ -9,17 +9,29 @@ import { AuthGuard } from './auth.guard';
 import { CategoriesComponent } from './categories/categories.component';
 import { ActivityComponent } from './activity/activity.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { HomeComponent } from './home/home.component';
+import { WeightComponent } from './weight/weight.component';
+import { WaterReminderComponent } from './water-reminder/water-reminder.component';
+import { TestComponent } from './test/test.component';
+import { ArticleDetailComponent } from './article-detail/article-detail.component';
+import { LifestyleComponent } from './lifestyle/lifestyle.component';
+import { PressureComponent } from './pressure/pressure.component';
 const routes: Routes = [
   { path: 'register', component: RegistrationComponent },
   { path: 'login', component: LoginComponent },
   { path: 'categories', component: CategoriesComponent },
 { path: 'activity', component: ActivityComponent },
-{
-  path: '**',
-  redirectTo: '/dashboard'
-},
-  { path: 'dashboard',  component: DashboardComponent,  canActivate: [AuthGuard] }
-  // Ajoutez d'autres routes ici
+ { path: 'home', component: HomeComponent },
+  
+  { path: 'lifestyle', component: LifestyleComponent },
+ {path: 'test',component :TestComponent },
+ {path: 'article/:id',component: ArticleDetailComponent } , 
+  { path: 'weight', component: WeightComponent }, 
+  { path: 'pressure', component: PressureComponent },
+  { path: 'water-reminder', component: WaterReminderComponent },{ path: 'dashboard',  component: DashboardComponent,  canActivate: [AuthGuard] },{
+    path: '**',
+    redirectTo: '/home'
+  }
 ];
 
 @NgModule({

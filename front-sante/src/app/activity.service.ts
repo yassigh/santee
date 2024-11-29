@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
 import { Activity } from './activity.model';  // Assurez-vous que le modèle existe
 
 @Injectable({
@@ -11,11 +11,17 @@ export class ActivityService {
 
   constructor(private http: HttpClient) {}
 
-  // Fonction pour ajouter une activité
   addActivity(activity: any): Observable<any> {
-    return this.http.post(this.apiUrl, activity, {
-      headers: { 'Content-Type': 'application/json' }
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      console.error('User not authenticated');
+      return throwError('User not authenticated'); // Retourner une erreur si le token n'est pas présent
+    }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`, // Ajouter le jeton d'autorisation
+      'Content-Type': 'application/json'
     });
+    return this.http.post(this.apiUrl, activity, { headers });
   }
   
 }
