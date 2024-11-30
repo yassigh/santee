@@ -15,11 +15,11 @@ export class LoginComponent implements OnInit {
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    // Initialisation du formulaire avec des validations
+
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],  // Validation de l'email
       password: ['', [Validators.required, Validators.minLength(6)]]  // Validation du mot de passe
-    });
+    });    this.initializeGoogleLogin();
   }
 
   onLogin(): void {
@@ -39,4 +39,27 @@ export class LoginComponent implements OnInit {
       }
     );
   }
+
+  initializeGoogleLogin() {
+    window.google.accounts.id.initialize({
+      client_id: '390286337775-ujmjif3sm2p6hulijo68kk9iobl9mi7k.apps.googleusercontent.com',
+      callback: (response: any) => this.handleCredentialResponse(response),
+    });
+    window.google.accounts.id.renderButton(
+      document.getElementById("g_id_onload"), 
+      { theme: "outline", size: "large" }
+    );
+  }
+
+  // Méthode pour traiter la réponse de Google
+  handleCredentialResponse(response: any): void {
+    if (response.credential) {
+      // Vous pouvez ici envoyer le token au backend pour validation
+      // Exemple de redirection après connexion réussie
+      this.router.navigate(['/categories']); // Redirige vers la page des catégories
+    } else {
+      this.errorMessage = 'Échec de la connexion avec Google.';
+    }
+  }
+
   }

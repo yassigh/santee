@@ -18,7 +18,8 @@ class RegistrationController extends AbstractController
 
     public function __construct()
     {
-        $this->jwtSecret = 'your_secret_key'; // À remplacer par une clé sécurisée
+        // Récupérer la clé secrète depuis le fichier .env
+        $this->jwtSecret = $_ENV['JWT_SECRET_KEY'] ?? 'default_secret_key'; // À remplacer par une clé par défaut pour éviter les erreurs
     }
 
     /**

@@ -21,30 +21,28 @@ export class ActivityComponent implements OnInit {
   userId: number | null = null;
   selectedPeriod: string = 'jour';
 
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = 'http://localhost:8000/api'; 
+
   constructor(
-    private activityService: ActivityService,
-    private authService: AuthService,
-    private http: HttpClient,private router:Router
-  ) {}
+    private activityService: ActivityService, private authService: AuthService,private http: HttpClient,private router: Router) {}
 
   ngOnInit(): void {
     const token = this.authService.getToken();
     if (!token) {
-      this.router.navigate(['/login']);  // Redirect to login if token is missing
+      this.router.navigate(['/login']);  
     } else {
-      this.loadActivities();  // Load activities if token is available
-      this.getUserId();  // Get user ID
+      this.loadActivities();  
+      this.getUserId(); 
     }
   }
-  
 
   getUserId(): void {
-    const user = this.authService.getUser();  // Supposons que `getUser()` retourne l'objet utilisateur
+    const user = this.authService.getUser(); 
     this.userId = user ? user.id : null;
   }
 
   loadActivities(): void {
+   
     this.activities = [
       { nom: 'Lecture' },
       { nom: 'Exercice' },
@@ -54,28 +52,27 @@ export class ActivityComponent implements OnInit {
 
   submitActivity(): void {
     if (this.time >= 2) {
-      this.goalReached = true;
+      this.goalReached = true;  
     }
+
    
     const newActivity = {
       activity: this.selectedActivity,
       heure: this.time,
       age: this.age,
-      userId: this.userId  // Assurez-vous que l'ID de l'utilisateur est présent
+      userId: this.userId  
     };
 
     // Appeler le service pour ajouter l'activité
     this.activityService.addActivity(newActivity).subscribe({
       next: (response) => {
         console.log('Activity added successfully', response);
-        // Effectuer une redirection ou mettre à jour l'UI selon la réponse
+        // Vous pouvez rediriger ou mettre à jour l'UI en fonction de la réponse ici
       },
       error: (error) => {
         console.error('Error adding activity', error);
+        // Gestion des erreurs du côté du serveur
       }
     });
   }
-  
-  
-  
 }
