@@ -1,27 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { Activity } from './activity.model';  // Assurez-vous que le modèle existe
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActivityService {
-  private apiUrl = 'http://localhost:8000/activity/add';  // L'URL pour envoyer les données au backend
+  private apiUrl = 'http://localhost:8000';
 
   constructor(private http: HttpClient) {}
 
-  addActivity(activity: any): Observable<any> {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      console.error('User not authenticated');
-      return throwError('User not authenticated'); // Retourner une erreur si le token n'est pas présent
-    }
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`, // Ajouter le jeton d'autorisation
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(this.apiUrl, activity, { headers });
+
+  getActivitiesByUser(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/activities/${userId}`);
   }
-  
+
+  // Add a new activity
+  addActivity(activity: any): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('token')}` // Le token JWT est récupéré depuis le stockage local
+    });
+    return this.http.post(`${this.apiUrl}/activity/add`, activity, { headers });
+  }
+
+  saveUserWeight(weightData: any): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('token')}`  // Token JWT
+    });
+    // URL correcte de l'API Symfony pour l'ajout des mesures
+    return this.http.post(`${this.apiUrl}/api/measurement/add`, weightData, { headers });
+  }
 }

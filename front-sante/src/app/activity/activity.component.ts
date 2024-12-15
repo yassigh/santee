@@ -1,10 +1,8 @@
+
 import { Component, OnInit } from '@angular/core';
-import { ActivityService } from '../activity.service';
 import { AuthService } from '../auth.service';
-import { HttpHeaders } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, throwError } from 'rxjs';
+import { ActivityService } from '../activity.service';
 
 @Component({
   selector: 'app-activity',
@@ -18,61 +16,66 @@ export class ActivityComponent implements OnInit {
   activities: any[] = [];
   goalReached: boolean = false;
   currentDate: Date = new Date();
-  userId: number | null = null;
   selectedPeriod: string = 'jour';
 
-  private apiUrl = 'http://localhost:8000/api'; 
+  userId: number | null = null;
 
   constructor(
-    private activityService: ActivityService, private authService: AuthService,private http: HttpClient,private router: Router) {}
+    private activityService: ActivityService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    const token = this.authService.getToken();
-    if (!token) {
-      this.router.navigate(['/login']);  
+   
+    this.userId = this.authService.getUserIdFromToken();
+
+   
+    if (this.userId) {
+     
+      this.activityService.getActivitiesByUser(this.userId).subscribe(
+        (data) => {
+          this.activities = data;
+        },
+        (error) => {
+          console.error('Error fetching activities', error);
+        }
+      );
     } else {
-      this.loadActivities();  
-      this.getUserId(); 
+      console.error('User ID not found in token');
     }
   }
-
-  getUserId(): void {
-    const user = this.authService.getUser(); 
-    this.userId = user ? user.id : null;
-  }
-
-  loadActivities(): void {
-   
-    this.activities = [
-      { nom: 'Lecture' },
-      { nom: 'Exercice' },
-      { nom: 'Cuisine' }
-    ];
+  checkGoal(): void {
+    if (this.time >= 2 && this.selectedActivity.toLowerCase() !== 'exercice') {
+      this.goalReached = true;
+    } else {
+      this.goalReached = false;
+    }
   }
 
   submitActivity(): void {
-    if (this.time >= 2) {
-      this.goalReached = true;  
+    
+    if (!this.userId) {
+      alert('User ID not found. Please login again.');
+      return;
     }
 
-   
-    const newActivity = {
+    const payload = {
       activity: this.selectedActivity,
       heure: this.time,
       age: this.age,
-      userId: this.userId  
+      user_id: this.userId 
     };
 
-    // Appeler le service pour ajouter l'activité
-    this.activityService.addActivity(newActivity).subscribe({
-      next: (response) => {
+    this.activityService.addActivity(payload).subscribe(
+      (response) => {
         console.log('Activity added successfully', response);
-        // Vous pouvez rediriger ou mettre à jour l'UI en fonction de la réponse ici
+        alert('Activity added successfully');
       },
-      error: (error) => {
+      (error) => {
         console.error('Error adding activity', error);
-        // Gestion des erreurs du côté du serveur
+        alert('Error adding activity');
       }
-    });
+    );
   }
 }

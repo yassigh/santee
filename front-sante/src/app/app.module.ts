@@ -11,7 +11,6 @@ import { AuthService } from './auth.service';
 
 
 import { CategoriesComponent } from './categories/categories.component';
-import { ActivityComponent } from './activity/activity.component';
 
 import { HomeComponent } from './home/home.component';
 import { RouterModule } from '@angular/router';
@@ -23,6 +22,9 @@ import { WeightComponent } from './weight/weight.component';
 import { LifestyleComponent } from './lifestyle/lifestyle.component';
 import { WaterReminderComponent } from './water-reminder/water-reminder.component';
 import { PressureComponent } from './pressure/pressure.component';
+import { WaterIntakeHistoryComponent } from './water-intake-history/water-intake-history.component';
+import { ActivityService } from './activity.service';
+import { ActivityComponent } from './activity/activity.component';
 
 
 @NgModule({
@@ -34,7 +36,7 @@ import { PressureComponent } from './pressure/pressure.component';
     DashboardComponent,
 
     CategoriesComponent,
-    ActivityComponent,
+   
     PressureComponent,
     WaterReminderComponent,
     ActivityComponent,
@@ -43,7 +45,8 @@ import { PressureComponent } from './pressure/pressure.component';
     ProfileComponent,
     TestComponent,
     ArticleDetailComponent,
-    HomeComponent
+    HomeComponent,
+    WaterIntakeHistoryComponent
 
   ],
   imports: [
@@ -54,7 +57,7 @@ import { PressureComponent } from './pressure/pressure.component';
     FormsModule,
     RouterModule
   ],
-  providers: [AuthService],
+  providers: [AuthService,ActivityService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

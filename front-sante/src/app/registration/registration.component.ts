@@ -13,11 +13,7 @@ export class RegistrationComponent implements OnInit {
   registrationForm!: FormGroup;
   error: string | null = null;
 
-  constructor(
-    private fb: FormBuilder,
-    private registrationService: RegistrationService,
-    private router: Router
-  ) {}
+  constructor(private fb: FormBuilder, private registrationService: RegistrationService,private router: Router) {}
 
   ngOnInit(): void {
     this.registrationForm = this.fb.group({

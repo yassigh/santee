@@ -16,18 +16,21 @@ import { TestComponent } from './test/test.component';
 import { ArticleDetailComponent } from './article-detail/article-detail.component';
 import { LifestyleComponent } from './lifestyle/lifestyle.component';
 import { PressureComponent } from './pressure/pressure.component';
+import { ProfileComponent } from './profile/profile.component';
+import { WaterIntakeHistoryComponent } from './water-intake-history/water-intake-history.component';
 const routes: Routes = [
   { path: 'register', component: RegistrationComponent },
   { path: 'login', component: LoginComponent },
   { path: 'categories', component: CategoriesComponent },
 { path: 'activity', component: ActivityComponent },
  { path: 'home', component: HomeComponent },
-  
+ { path: 'profile', component: ProfileComponent },
   { path: 'lifestyle', component: LifestyleComponent },
  {path: 'test',component :TestComponent },
  {path: 'article/:id',component: ArticleDetailComponent } , 
   { path: 'weight', component: WeightComponent }, 
   { path: 'pressure', component: PressureComponent },
+  { path: 'water-intake-history/:userId', component: WaterIntakeHistoryComponent },
   { path: 'water-reminder', component: WaterReminderComponent },{ path: 'dashboard',  component: DashboardComponent,  canActivate: [AuthGuard] },{
     path: '**',
     redirectTo: '/home'

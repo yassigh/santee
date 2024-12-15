@@ -24,13 +24,13 @@ export class LoginComponent implements OnInit {
 
   onLogin(): void {
     const loginData = this.loginForm.value;
-    console.log('Login Data:', loginData);  // Vérifiez que les données sont correctes
+    console.log('Login Data:', loginData);  // Verifiez que les donnees sont correctes
 
     this.authService.login(loginData).subscribe(
       (response: any) => {
         console.log('Login success', response);
-        // Assurez-vous que le token est bien sauvegardé
-        this.authService.saveToken(response.token);
+        // Assurez-vous que le token est bien sauvegarde
+        localStorage.setItem('token', response.token);
         this.router.navigate(['/categories']);  // Redirige vers la page de catégories
       },
       (error) => {
@@ -39,6 +39,24 @@ export class LoginComponent implements OnInit {
       }
     );
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
   initializeGoogleLogin() {
     window.google.accounts.id.initialize({

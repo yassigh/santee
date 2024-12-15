@@ -11,7 +11,7 @@ export class WaterReminderComponent {
 
   
   dailyGoal: number = 2000;
-  userId: number = 97;  // Change this based on user
+  userId: number = 8;  // Change this based on user
   date: string = '';
   time: string = '';
   amount: number = 0;
